@@ -1,0 +1,17 @@
+APP_NAME=Laravel
+APP_ENV=production
+APP_KEY=base64:lvj4GqJO88rFaqi7odWdP+HLXUXeXZRygSazOZSgM4I=
+APP_DEBUG=false
+APP_URL=http://playlab.clickonsave.com
+FORCE_HTTPS=false
+
+LOG_CHANNEL=stack
+
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=u866170776_betlab
+DB_USERNAME=u866170776_betlab
+DB_PASSWORD=R+qy@/at7:1
+
+PURCHASECODE=1413b571-e414-40e8-abf8-83cb4f9942bd
