@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Api\Auth;
-
 use App\Http\Controllers\Controller;
 use App\Models\Extension;
 use App\Models\UserLogin;
@@ -47,8 +46,9 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        // validate the login process
         $validator = $this->validateLogin($request);
-
+        // if the validator creates an error
         if ($validator->fails()) {
             return response()->json([
                 'code'=>200,
@@ -56,7 +56,6 @@ class LoginController extends Controller
                 'message'=>['error'=>$validator->errors()->all()],
             ]);
         }
-
         $credentials = request([$this->username, 'password']);
         if(!Auth::attempt($credentials)){
             $response[] = 'Unauthorized user';
@@ -67,22 +66,27 @@ class LoginController extends Controller
             ]);
         }
 
+        // get the user from the request object
         $user = $request->user();
+        // echo $user;
+        // create the token and get the result
         $tokenResult = $user->createToken('auth_token')->plainTextToken;
+        // if the user is authenticated, then send success response
         $this->authenticated($request,$user);
-        $response[] = 'Login Succesfull';
+        // response message
+        // $response[] = 'Login Succesfull';
+        // convert the response to json, contains access token and token type
+        // response()->header();
         return response()->json([
             'code'=>200,
             'status'=>'ok',
-            'message'=>['success'=>$response],
+            'message'=>['success'=>'Login successfull'],
             'data'=>[
                 'user' => auth()->user(),
                 'access_token'=>$tokenResult,
                 'token_type'=>'Bearer'
             ]
-        ]);
-
-        
+        ]);  
     }
 
     public function findUsername()
@@ -94,13 +98,16 @@ class LoginController extends Controller
         return $fieldType;
     }
 
+    // calls find username behind th hood
     public function username()
     {
         return $this->username;
     }
 
+    // validates the login, takes in the request object
     protected function validateLogin(Request $request)
     {
+        // the rules of validation
         $validation_rule = [
             $this->username() => 'required|string',
             'password' => 'required|string',
@@ -156,15 +163,11 @@ class LoginController extends Controller
             $userLogin->country_code = @implode(',',$info['code']);
             $userLogin->country =  @implode(',', $info['country']);
         }
-
         $userAgent = osBrowser();
         $userLogin->user_id = $user->id;
         $userLogin->user_ip =  $ip;
-        
         $userLogin->browser = @$userAgent['browser'];
         $userLogin->os = @$userAgent['os_platform'];
         $userLogin->save();
     }
-
-
 }
