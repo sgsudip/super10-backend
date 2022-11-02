@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Lib\GoogleAuthenticator;
 use App\Models\AdminNotification;
 use App\Models\Bet;
@@ -37,6 +35,7 @@ class UserController extends Controller
         $widget['totalRefund']      = Bet::where('user_id', $user->id)->where('status', 3)->count();
         $widget['totalTicket']      = SupportTicket::where('user_id', $user->id)->count();
         $bets                       = Bet::where('user_id', auth()->user()->id)->latest()->limit(15)->with(['match','question','option'])->get();
+        // this renders the view
         return view($this->activeTemplate . 'user.dashboard', compact('pageTitle', 'user', 'widget', 'bets'));
     }
 

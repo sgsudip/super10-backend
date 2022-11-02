@@ -21,6 +21,18 @@ class UserController extends Controller
    public function getUser(Request $request){
       return auth()->user();
    }
+
+   public function getDashboard(Request $request){
+    $user = auth()->user();
+    response()->header('Location','http://super10.live/api/user/authorization');
+    return response()->json([
+        'code'=>200,
+        'status'=>'ok',
+        'message'=>['success'=>'success'],
+    ]);
+
+     
+   }
    
 	public function submitProfile(Request $request){
 		$validator = Validator::make($request->all(),[

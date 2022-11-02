@@ -34,9 +34,7 @@ Route::namespace('Api')->name('api.')->group(function(){
 	    Route::post('verify-g2fa', 'AuthorizationController@g2faVerification')->name('go2fa.verify');
 
 	    Route::middleware(['checkStatusApi'])->group(function(){
-	    	Route::get('dashboard',function(){
-	    		return auth()->user();
-	    	});
+	    	Route::get('dashboard','UserController@getDashboard');
 
             Route::get('getUser', 'UserController@getUser');
             Route::post('profile-setting', 'UserController@submitProfile');
