@@ -23,15 +23,15 @@ class UserController extends Controller
    }
 
    public function getDashboard(Request $request){
+    $hst = $request->host();
+
     $user = auth()->user();
-    response()->header('Location','http://super10.live/api/user/authorization');
+    response()->header('Location','http://'.$hst.'/api/user/authorization');
     return response()->json([
         'code'=>200,
         'status'=>'ok',
         'message'=>['success'=>'success'],
     ]);
-
-     
    }
    
 	public function submitProfile(Request $request){
