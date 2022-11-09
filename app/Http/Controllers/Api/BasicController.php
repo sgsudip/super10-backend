@@ -81,7 +81,7 @@ class BasicController extends Controller
         $nonce = md5(uniqid(mt_rand(), true));
         //   current time
         $time = time();
-
+        // $time = date("Y-m-d",$time);
         //   assign headers to the rquest , remember you are sending a request from the server to the staging url that slotegrator provided, authorization headers
         $headers = [
             'X-Merchant-Id' => $merchantId, 'X-Timestamp' => $time,
