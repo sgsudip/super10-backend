@@ -85,7 +85,7 @@ class BasicController extends Controller
         //   assign headers to the rquest , remember you are sending a request from the server to the staging url that slotegrator provided, authorization headers
         $headers = [
             'X-Merchant-Id' => $merchantId, 'X-Timestamp' => $time,
-            'X-Nonce' => $nonce
+            'X-Nonce' => $nonce, 
         ];
 
         //   request parameters
@@ -116,7 +116,8 @@ class BasicController extends Controller
         // $postdata = http_build_query($requestParams);
 
         $getHeader = array(
-            'X-Merchant-Id: ' . $merchantId, 'X-Timestamp: ' . $time,
+            'X-Merchant-Id: ' . $merchantId, 
+            'X-Timestamp: ' . $time,
             'X-Nonce: ' . $nonce,
             'X-Sign: ' . $XSign,
             'Accept: application/json',
@@ -152,10 +153,10 @@ class BasicController extends Controller
             'status' => 'ok',
             'message' => [
                 'response' => json_decode($result,true),
-                // 'headers' => $headers,
-                // 'requestParamsHeaders' => $requestParams,
-                // 'hashstring' => $queryString,
-                // 'getDataHeader' => $getHeader,
+                'headers' => $headers,
+                'requestParamsHeaders' => $requestParams,
+                'hashstring' => $queryString,
+                'getDataHeader' => $getHeader,
                 'cinfo' => curl_getinfo($ch) 
             ]
         ]);
