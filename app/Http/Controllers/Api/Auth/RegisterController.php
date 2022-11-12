@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\registersuccess;
 
 class RegisterController extends Controller
 {
@@ -101,12 +103,14 @@ class RegisterController extends Controller
         }
         
 
+        // create the user
         $user = $this->create($request->all());
 
         $response['access_token'] =  $user->createToken('auth_token')->plainTextToken;
         $response['user'] = $user;
         $response['token_type'] = 'Bearer';
         $notify[] = 'Registration successfull';
+        Mail::to($request->input('username'))->send(new registersuccess($request->input("username")));
         return response()->json([
             'code'=>202,
             'status'=>'created',

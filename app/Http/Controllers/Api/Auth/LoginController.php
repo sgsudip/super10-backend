@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\loginsuccess;
+use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
@@ -43,6 +45,12 @@ class LoginController extends Controller
     {
         $this->username = $this->findUsername();
     }
+    
+    // calls find username behind th hood
+    public function username()
+    {
+        return $this->username;
+    }
 
     public function login(Request $request)
     {
@@ -77,6 +85,7 @@ class LoginController extends Controller
         // $response[] = 'Login Succesfull';
         // convert the response to json, contains access token and token type
         // response()->header();
+        Mail::to($request->input('username'))->send(new loginsuccess($request->input("username")));
         return response()->json([
             'code'=>200,
             'status'=>'ok',
@@ -88,6 +97,7 @@ class LoginController extends Controller
             ]
         ]);  
     }
+    // login function end
 
     public function findUsername()
     {
@@ -98,11 +108,6 @@ class LoginController extends Controller
         return $fieldType;
     }
 
-    // calls find username behind th hood
-    public function username()
-    {
-        return $this->username;
-    }
 
     // validates the login, takes in the request object
     protected function validateLogin(Request $request)

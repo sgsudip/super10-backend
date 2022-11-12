@@ -547,11 +547,12 @@ function sendPhpMail($receiver_email, $receiver_name, $subject, $message,$genera
     @mail($receiver_email, $subject, $message, $headers);
 }
 
-
+// depending on the config this will send an smtp mail
 function sendSmtpMail($config, $receiver_email, $receiver_name, $subject, $message,$general)
 {
     $mail = new PHPMailer(true);
 
+    // $config resolve to GeneralSetting::first()->mail_config
     try {
         //Server settings
         $mail->isSMTP();

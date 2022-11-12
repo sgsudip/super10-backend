@@ -100,8 +100,6 @@ class AuthorizationController extends Controller
     public function sendVerifyCode(Request $request)
     {
         $user = Auth::user();
-
-
         if ($this->checkValidCode($user, $user->ver_code, 2)) {
             $target_time = $user->ver_code_send_at->addMinutes(2)->timestamp;
             $delay = $target_time - time();
