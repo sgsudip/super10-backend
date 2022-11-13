@@ -83,7 +83,7 @@ class BasicController extends Controller
 
         //   assign headers to the rquest , remember you are sending a request from the server to the staging url that slotegrator provided, authorization headers
         $headers = [
-            'X-Merchant-Id' => $merchantId, 
+            'X-Merchant-Id' => $merchantId,
             'X-Timestamp' => $time,
             'X-Nonce' => $nonce
         ];
@@ -91,7 +91,7 @@ class BasicController extends Controller
         //   request parameters
         $requestParams = [
             'game_uuid' => $request->game_uuid,
-            'player_id' => $request->player_id, 
+            'player_id' => $request->player_id,
             'currency' => 'USD',
             'player_name' => $request->player_name,
             'session_id' => session_id()
@@ -115,7 +115,7 @@ class BasicController extends Controller
 
         $getHeader = array(
             'X-Merchant-Id: ' . $merchantId,
-             'X-Timestamp: ' . $time,
+            'X-Timestamp: ' . $time,
             'X-Nonce: ' . $nonce,
             'X-Sign: ' . $XSign,
             'Accept: application/json',
@@ -174,7 +174,7 @@ class BasicController extends Controller
         $requestParams = [
             'game_uuid' => $request->game_uuid,
             'player_id' => $request->player_id, 'currency' => 'EUR',
-            'player_name' => $request->player_name, 
+            'player_name' => $request->player_name,
             'session_id' => session()->getId()
         ];
 
@@ -198,7 +198,7 @@ class BasicController extends Controller
         $postdata = http_build_query($requestParams);
 
         $postHeader = array(
-            'X-Merchant-Id: ' . $merchantId, 
+            'X-Merchant-Id: ' . $merchantId,
             'X-Timestamp: ' . $time,
             'X-Nonce: ' . $nonce,
             'X-Sign: ' . $XSign,
@@ -220,11 +220,11 @@ class BasicController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         //   store result
         $result = curl_exec($ch);
-        if(curl_exec($ch) === false) {
-          echo 'Curl error: ' . curl_error($ch);
-      } else {
-          echo 'Operation completed without any errors';
-      }
+        //     if(curl_exec($ch) === false) {
+        //       echo 'Curl error: ' . curl_error($ch);
+        //   } else {
+        //       echo 'Operation completed without any errors';
+        //   }
 
         return response()->json([
             'code' => 200,

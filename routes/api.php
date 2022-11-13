@@ -13,7 +13,7 @@ Route::namespace('Api')->name('api.')->group(function () {
     Route::get('language-data/{code}', 'BasicController@languageData');
     Route::post('gamesInit', 'BasicController@gamesInit');
     Route::get('getGames', 'BasicController@getGames');
-    Route::post('testvalidate',"TestController@testValidate");
+    Route::post('testValidate',"TestController@testValidate");
 
     Route::namespace('Auth')->group(function () {
         Route::post('login', 'LoginController@login');
