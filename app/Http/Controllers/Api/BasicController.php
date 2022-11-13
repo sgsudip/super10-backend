@@ -156,21 +156,13 @@ class BasicController extends Controller
     // this is the games init function 
     public function gamesInit(Request $request)
     {
-        // the base url in this case will be
-        $url = 'https://staging.slotegrator.com/api/index.php/v1/games/init';
-        //   the merchant id
+        $url = 'https://staging.slotegrator.com/api/index.php/v1/self-validate';
         $merchantId = 'ae88ab8ee84ff40a76f1ec2e0f7b5caa';
-        //   the merchant key
         $merchantKey = '4953e491031d3f9e7545223885cf43a7403f14cb';
-        //   nonce
         $nonce = md5(uniqid(mt_rand(), true));
-        //   current time
         $time = time();
 
-        //   assign headers to the rquest , remember you are sending a request from the server to the staging url that slotegrator provided
         $headers = ['X-Merchant-Id' => $merchantId, 'X-Timestamp' => $time, 'X-Nonce' => $nonce];
-
-        //   request parameters
         $requestParams = [
             'game_uuid' => $request->game_uuid,
             'player_id' => $request->player_id, 'currency' => 'EUR',
@@ -178,25 +170,13 @@ class BasicController extends Controller
             'session_id' => session()->getId()
         ];
 
-
-        //   mergerd params
         $mergedParams = array_merge($requestParams, $headers);
-        //   sort by key in asc order
         ksort($mergedParams);
-        //   generate hashstring
         $hashString = http_build_query($mergedParams);
-
-        // echo $hashString;
-
-        //create sha 1 hmac hash using hashstring and merchanykey
         $XSign = hash_hmac('sha1', $hashString, $merchantKey);
 
-        //   sort again
         ksort($requestParams);
-
-        //   
         $postdata = http_build_query($requestParams);
-
         $postHeader = array(
             'X-Merchant-Id: ' . $merchantId,
             'X-Timestamp: ' . $time,
@@ -205,20 +185,12 @@ class BasicController extends Controller
             'Accept: application/json',
             'Enctype: application/x-www-form-urlencoded'
         );
-        // initialize curl request 
         $ch = curl_init();
-        //   set url
         curl_setopt($ch, CURLOPT_URL, $url);
-        //   timeout value
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        /*curl_setopt($ch, CURLOPT_POST, 1);*/
-        //   headers
         curl_setopt($ch, CURLOPT_HTTPHEADER, $postHeader);
-        //   post fields
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-        //   set CURLOPT_RETURNTRANSFER TRUE to return the transfer as a string of the return value of curl_exec() instead of outputting it out directly.
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        //   store result
         $result = curl_exec($ch);
         //     if(curl_exec($ch) === false) {
         //       echo 'Curl error: ' . curl_error($ch);
