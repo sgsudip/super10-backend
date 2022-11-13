@@ -48,7 +48,6 @@ class TestController extends Controller
             'player_id' => $request->player_id,
             'currency' => 'USD',
             'player_name' => $request->player_name,
-            'session_id' => session_id()
         ];
         $mergedParams = array_merge($requestParams, $headers);
         ksort($mergedParams);
