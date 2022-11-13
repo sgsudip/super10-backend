@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Withdrawal;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Auth\Notifications\ResetPassword;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -81,5 +82,8 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrap();
 
+        ResetPassword::createUrlUsing(function ($notifiable, $token) {
+            return "http://localhost:4200/passwordreset/{$token}";
+        });
     }
 }

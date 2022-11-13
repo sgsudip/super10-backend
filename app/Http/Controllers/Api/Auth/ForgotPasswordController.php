@@ -30,79 +30,86 @@ class ForgotPasswordController extends Controller
     }
 
 
+    // send code for resetting email
     public function sendResetCodeEmail(Request $request)
     {
-        // if ($request->type == 'email') {
-        //     $validationRule = [
-        //         'value'=>'required|email'
-        //     ];
-        //     $validationMessage = [
-        //         'value.required'=>'Email field is required',
-        //         'value.email'=>'Email must be an valide email'
-        //     ];
-        // }elseif($request->type == 'username'){
-        //     $validationRule = [
-        //         'value'=>'required'
-        //     ];
-        //     $validationMessage = ['value.required'=>'Username field is required'];
-        // }else{
-        //     return response()->json([
-        //         'code'=>200,
-        //         'status'=>'ok',
-        //         'message'=>['error'=>['Invalid selection']],
-        //     ]);
-        // }
-        // $validator = Validator::make($request->all(),$validationRule,$validationMessage);
-        // if ($validator->fails()) {
-        //     return response()->json([
-        //         'code'=>200,
-        //         'status'=>'ok',
-        //         'message'=>['error'=>$validator->errors()->all()],
-        //     ]);
-        // }
+        if ($request->type == 'email') {
+            $validationRule = [
+                'value'=>'required|email'
+            ];
+            $validationMessage = [
+                'value.required'=>'Email field is required',
+                'value.email'=>'Email must be an valide email'
+            ];
+        }elseif($request->type == 'username'){
+            $validationRule = [
+                'value'=>'required'
+            ];
+            $validationMessage = ['value.required'=>'Username field is required'];
+        }else{
+            return response()->json([
+                'code'=>200,
+                'status'=>'ok',
+                'message'=>['error'=>['Invalid selection']],
+            ]);
+        }
+        // create validator instance
+        $validator = Validator::make($request->all(),$validationRule,$validationMessage);
 
-        // $user = User::where($request->type, $request->value)->first();
+        if ($validator->fails()) {
+            return response()->json([
+                'code'=>422,
+                'status'=>'error',
+                'message'=>['error'=>$validator->errors()->all()],
+            ]);
+        }
+
+        // get user row
+        $user = User::where($request->type, $request->value)->first();
         
-        // if (!$user) {
-        //     $notify[] = 'User not found.';
-        //     return response()->json([
-        //         'code'=>200,
-        //         'status'=>'ok',
-        //         'message'=>['error'=>$notify],
-        //     ]);
-        // }
+        // if user not found
+        if (!$user) {
+            $notify[] = 'User not found.';
+            return response()->json([
+                'code'=>404,
+                'status'=>'error',
+                'message'=>['error'=>$notify],
+            ]);
+        }
 
-        // PasswordReset::where('email', $user->email)->delete();
-        // $code = verificationCode(6);
-        // $password = new PasswordReset();
-        // $password->email = $user->email;
-        // $password->token = $code;
-        // $password->created_at = \Carbon\Carbon::now();
-        // $password->save();
+        PasswordReset::where('email', $user->email)->delete();
+        // generate code or verification
+        $code = verificationCode(6);
+        $password = new PasswordReset();
+        $password->email = $user->email;
+        $password->token = $code;
+        $password->created_at = \Carbon\Carbon::now();
+        $password->save();
 
-        // $userIpInfo = getIpInfo();
-        // $userBrowserInfo = osBrowser();
-        // sendEmail($user, 'PASS_RESET_CODE', [
-        //     'code' => $code,
-        //     'operating_system' => @$userBrowserInfo['os_platform'],
-        //     'browser' => @$userBrowserInfo['browser'],
-        //     'ip' => @$userIpInfo['ip'],
-        //     'time' => @$userIpInfo['time']
-        // ]);
-        // $email = $user->email;
-        // $notify[] = 'Password reset email sent successfully';
-        // return response()->json([
-        //     'code'=>200,
-        //     'status'=>'ok',
-        //     'message'=>['success'=>$notify],
-        //     'data'=>['email'=>$email]
-        // ]);
+        // get user's ip information
+        $userIpInfo = getIpInfo();
+        // get the browser
+        $userBrowserInfo = osBrowser();
+        sendEmail($user, 'PASS_RESET_CODE', [
+            'code' => $code,
+            'operating_system' => @$userBrowserInfo['os_platform'],
+            'browser' => @$userBrowserInfo['browser'],
+            'ip' => @$userIpInfo['ip'],
+            'time' => @$userIpInfo['time']
+        ]);
+        $email = $user->email;
+        $notify[] = 'Password reset email sent successfully';
         return response()->json([
             'code'=>200,
             'status'=>'ok',
-            'message'=>$request->type,
-           
+            'message'=>['success'=>$notify],
+            'data'=>['email'=>$email]
         ]);
+        // return response()->json([
+        //     'code'=>200,
+        //     'status'=>'ok',
+        //     'message'=>$request->type,
+        // ]);
     }
 
 

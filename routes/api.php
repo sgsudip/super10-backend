@@ -4,41 +4,41 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-Route::namespace('Api')->name('api.')->group(function(){
-   
-	Route::post('paymentCallback','UserController@paymentCallback');
-   
-	Route::get('general-setting','BasicController@generalSetting');
-	Route::get('unauthenticate','BasicController@unauthenticate')->name('unauthenticate');
-	Route::get('languages','BasicController@languages');
-	Route::get('language-data/{code}','BasicController@languageData');
-	Route::post('gamesInit','BasicController@gamesInit');
-    Route::get('getGames','BasicController@getGames');
+Route::namespace('Api')->name('api.')->group(function () {
 
-	Route::namespace('Auth')->group(function(){
-		Route::post('login', 'LoginController@login');
-		Route::post('register', 'RegisterController@register');
-		
-	    Route::post('password/email', 'ForgotPasswordController@sendResetCodeEmail');
-	    Route::post('password/verify-code', 'ForgotPasswordController@verifyCode');
-	    
-	    Route::post('password/reset', 'ResetPasswordController@reset');
-	});
+    Route::post('paymentCallback', 'UserController@paymentCallback');
+    Route::get('general-setting', 'BasicController@generalSetting');
+    Route::get('unauthenticate', 'BasicController@unauthenticate')->name('unauthenticate');
+    Route::get('languages', 'BasicController@languages');
+    Route::get('language-data/{code}', 'BasicController@languageData');
+    Route::post('gamesInit', 'BasicController@gamesInit');
+    Route::get('getGames', 'BasicController@getGames');
+
+    Route::namespace('Auth')->group(function () {
+        Route::post('login', 'LoginController@login');
+        Route::post('register', 'RegisterController@register');
+        Route::post('testvalidate',"TestController@testValidate");
+        Route::post('password/email', 'ForgotPasswordController@sendResetCodeEmail');
+        Route::post('password/verify-code', 'ForgotPasswordController@verifyCode');
+        Route::post('password/reset', 'ResetPasswordController@reset');
+    });
 
 
-	Route::middleware('auth.api:sanctum')->name('user.')->prefix('user')->group(function(){
-		Route::get('logout', 'Auth\LoginController@logout');
-		Route::get('authorization', 'AuthorizationController@authorization')->name('authorization');
-	    Route::get('resend-verify', 'AuthorizationController@sendVerifyCode')->name('send.verify.code');
-	    Route::post('verify-email', 'AuthorizationController@emailVerification')->name('verify.email');
-	    Route::post('verify-sms', 'AuthorizationController@smsVerification')->name('verify.sms');
-	    Route::post('verify-g2fa', 'AuthorizationController@g2faVerification')->name('go2fa.verify');
+    Route::middleware('auth.api:sanctum')->name('user.')->prefix('user')->group(function () {
+        Route::get('logout', 'Auth\LoginController@logout');
+        Route::get('authorization', 'AuthorizationController@authorization')->name('authorization');
+        Route::get('resend-verify', 'AuthorizationController@sendVerifyCode')->name('send.verify.code');
+        Route::post('verify-email', 'AuthorizationController@emailVerification')->name('verify.email');
+        Route::post('verify-sms', 'AuthorizationController@smsVerification')->name('verify.sms');
+        Route::post('verify-g2fa', 'AuthorizationController@g2faVerification')->name('go2fa.verify');
 
-	    Route::middleware(['checkStatusApi'])->group(function(){
-	    	Route::get('dashboard','UserController@getDashboard');
+        Route::middleware(['checkStatusApi'])->group(function () {
+            Route::get('dashboard', 'UserController@getUser');
 
             Route::get('getUser', 'UserController@getUser');
+
             Route::post('profile-setting', 'UserController@submitProfile');
+
             Route::post('change-password', 'UserController@submitPassword');
 
             // Withdraw
@@ -59,7 +59,12 @@ Route::namespace('Api')->name('api.')->group(function(){
             Route::get('deposit/history', 'UserController@depositHistory');
 
             Route::get('transactions', 'UserController@transactions');
-
-	    });
-	});
+        });
+    });
 });
+
+// Route::get("password/reset/{token}", "ResetPasswordAPIController@showResetForm")->name("password.reset"); // --> we'll delete this later
+// Route::post("password/reset", "ResetPasswordAPIController@reset");
+// ->name indicates the name of the route
+// Route::post("password/email", "ForgotPasswordAPIController@sendResetLinkEmail")->name("password.email");
+
