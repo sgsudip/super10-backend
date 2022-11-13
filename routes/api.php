@@ -13,11 +13,12 @@ Route::namespace('Api')->name('api.')->group(function () {
     Route::get('language-data/{code}', 'BasicController@languageData');
     Route::post('gamesInit', 'BasicController@gamesInit');
     Route::get('getGames', 'BasicController@getGames');
+    Route::post('testvalidate',"TestController@testValidate");
 
     Route::namespace('Auth')->group(function () {
         Route::post('login', 'LoginController@login');
         Route::post('register', 'RegisterController@register');
-        Route::post('testvalidate',"TestController@testValidate");
+        
         Route::post('password/email', 'ForgotPasswordController@sendResetCodeEmail');
         Route::post('password/verify-code', 'ForgotPasswordController@verifyCode');
         Route::post('password/reset', 'ResetPasswordController@reset');
