@@ -1,6 +1,6 @@
-APP_NAME=super10backend
+APP_NAME=super10
 APP_ENV=production
-APP_KEY=base64:9QOE8//wGgUb7T4X9eFAN0TQ8+dcG7J2X3iYU23j+7s=
+APP_KEY=
 APP_DEBUG=false
 APP_URL=https://super10.live
 
