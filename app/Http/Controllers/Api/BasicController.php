@@ -156,7 +156,7 @@ class BasicController extends Controller
     // this is the games init function 
     public function gamesInit(Request $request)
     {
-        $url = 'https://staging.slotegrator.com/api/index.php/v1/self-validate';
+        $url = 'https://staging.slotegrator.com/api/index.php/v1/games/init';
         $merchantId = 'ae88ab8ee84ff40a76f1ec2e0f7b5caa';
         $merchantKey = '4953e491031d3f9e7545223885cf43a7403f14cb';
         $nonce = md5(uniqid(mt_rand(), true));

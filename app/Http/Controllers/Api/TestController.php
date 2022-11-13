@@ -51,15 +51,15 @@ class TestController extends Controller
         ];
         $mergedParams = array_merge($requestParams, $headers);
         ksort($mergedParams);
-        $queryString = http_build_query($mergedParams);
-        $XSign = hash_hmac('sha1', $queryString, $merchantKey);
+        // $queryString = http_build_query($mergedParams);
+        // $XSign = hash_hmac('sha1', $queryString, $merchantKey);
 
 
         $getHeader = array(
             'X-Merchant-Id: ' . $merchantId,
             'X-Timestamp: ' . $time,
             'X-Nonce: ' . $nonce,
-            'X-Sign: ' . $XSign,
+            // 'X-Sign: ' . $XSign,
             'Accept: application/json',
             'Enctype: application/x-www-form-urlencoded'
         );
