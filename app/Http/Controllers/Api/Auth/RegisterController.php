@@ -93,6 +93,7 @@ class RegisterController extends Controller
         }
         
         $exist = User::where('mobile',$request->mobile_code.$request->mobile)->first();
+        // check if mobile already exists
         if ($exist) {
             $response[] = 'The mobile number already exists';
             return response()->json([
@@ -110,7 +111,7 @@ class RegisterController extends Controller
         $response['user'] = $user;
         $response['token_type'] = 'Bearer';
         $notify[] = 'Registration successfull';
-        Mail::to($request->input('username'))->send(new registersuccess($request->input("username")));
+        Mail::to($request->input('username'))->send(new registersuccess($request->input("email")));
         return response()->json([
             'code'=>202,
             'status'=>'created',
