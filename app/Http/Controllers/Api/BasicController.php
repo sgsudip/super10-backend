@@ -236,7 +236,7 @@ class BasicController extends Controller
         
         ksort($mergedParams);
 
-        print_r($mergedParams);
+        // print_r($mergedParams);
         $queryString = http_build_query($mergedParams);
         $XSign = hash_hmac('sha1', $queryString, $merchantKey);
         ksort($requestParams);
@@ -252,7 +252,7 @@ class BasicController extends Controller
             'Enctype: application/x-www-form-urlencoded'
         );
 
-        print_r($postHeader);
+        // print_r($postHeader);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $testUrl);
@@ -277,7 +277,7 @@ class BasicController extends Controller
             return response()->json([
                 'code' => 200,
                 'status' => 'ok',
-                "result" => $result
+                "result" => json_decode($result)
             ]);
         }
 
