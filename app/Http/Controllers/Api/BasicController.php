@@ -215,6 +215,7 @@ class BasicController extends Controller
     public function testValidate(Request $request)
     {
         echo "Test validate function";
+
         $testUrl = "https://staging.slotegrator.com/api/index.php/v1/self-validate";
         $merchantId = 'ae88ab8ee84ff40a76f1ec2e0f7b5caa';
         $merchantKey = '4953e491031d3f9e7545223885cf43a7403f14cb';
@@ -228,28 +229,36 @@ class BasicController extends Controller
         $requestParams = [
             'game_uuid' => $request->game_uuid,
             'player_id' => $request->player_id,
-            'currency' => 'USD',
+            'currency' => 'EUR',
             'player_name' => $request->player_name,
         ];
         $mergedParams = array_merge($requestParams, $headers);
+        
         ksort($mergedParams);
-        // $queryString = http_build_query($mergedParams);
-        // $XSign = hash_hmac('sha1', $queryString, $merchantKey);
+
+        print_r($mergedParams);
+        $queryString = http_build_query($mergedParams);
+        $XSign = hash_hmac('sha1', $queryString, $merchantKey);
+        ksort($requestParams);
+        $postdata = http_build_query($requestParams);
 
 
-        $getHeader = array(
+        $postHeader = array(
             'X-Merchant-Id: ' . $merchantId,
             'X-Timestamp: ' . $time,
             'X-Nonce: ' . $nonce,
-            // 'X-Sign: ' . $XSign,
+            'X-Sign: ' . $XSign,
             'Accept: application/json',
             'Enctype: application/x-www-form-urlencoded'
         );
 
+        print_r($postHeader);
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $testUrl);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $getHeader);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $postHeader);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
 
