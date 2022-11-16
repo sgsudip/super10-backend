@@ -13,7 +13,6 @@ Route::namespace('Api')->name('api.')->group(function () {
     Route::get('language-data/{code}', 'BasicController@languageData');
     Route::post('gamesInit', 'BasicController@gamesInit');
     Route::get('getGames', 'BasicController@getGames');
-    Route::post('testValidate', "TestController@testValidate");
 
 
     Route::namespace('Auth')->group(function () {
@@ -22,6 +21,7 @@ Route::namespace('Api')->name('api.')->group(function () {
         Route::post('password/email', 'ForgotPasswordController@sendResetCodeEmail');
         Route::post('password/reset', 'ResetPasswordController@reset');
         // Route::post('password/verify-code', 'ForgotPasswordController@verifyCode');
+        Route::post('testValidate', "SelfController@testValidate");
 
     });
 
@@ -64,6 +64,8 @@ Route::namespace('Api')->name('api.')->group(function () {
         });
     });
 });
+
+
 
 // Route::get("password/reset/{token}", "ResetPasswordAPIController@showResetForm")->name("password.reset"); // --> we'll delete this later
 // Route::post("password/reset", "ResetPasswordAPIController@reset");

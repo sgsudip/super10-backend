@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Mail\loginsuccess;
 use Illuminate\Support\Facades\Mail;
 
-class TestController extends Controller
+class SelfController extends Controller
 {
 
     use AuthenticatesUsers;
@@ -27,7 +27,7 @@ class TestController extends Controller
 
     public function __construct()
     {
-      
+        $this->middleware('guest');
     }
 
 
