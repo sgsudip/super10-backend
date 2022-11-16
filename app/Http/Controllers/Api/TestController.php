@@ -31,7 +31,7 @@ class TestController extends Controller
     }
 
 
-    public function testValidate(Request $request)
+    public function testValidate()
     {
         echo "hello";
         $testUrl = "https://staging.slotegrator.com/api/index.php/v1/self-validate";
@@ -74,7 +74,7 @@ class TestController extends Controller
         ));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
-        var_dump($result);
+        // var_dump($result);
         // if ($result === false) {
         //     echo 'Curl error: ' . curl_error($ch);
         // } else {
@@ -93,8 +93,22 @@ class TestController extends Controller
         //     ]
         // ]);
 
-        return response()->json([
-            "result" => $result
-        ]);
+        if (curl_errno($ch)) {
+            $error_msg = curl_error($ch);
+        }
+        
+        if (isset($error_msg)) {
+            // TODO - Handle cURL error accordingly
+            return response()->json([
+                "error" => curl_error($ch)
+            ]);
+
+        }else{
+            return response()->json([
+                "result" => $result
+            ]);
+        }
+
+       
     }
 }
