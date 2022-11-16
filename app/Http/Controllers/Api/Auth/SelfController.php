@@ -62,6 +62,7 @@ class SelfController extends Controller
         
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $testUrl);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, array());
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
         //curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
