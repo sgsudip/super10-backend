@@ -111,7 +111,7 @@ class RegisterController extends Controller
         $response['user'] = $user;
         $response['token_type'] = 'Bearer';
         $notify[] = 'Registration successfull';
-        Mail::to($request->input('username'))->send(new registersuccess($request->input("email")));
+        Mail::to($request->input('email'))->send(new registersuccess($request->input("email")));
         return response()->json([
             'code'=>202,
             'status'=>'created',

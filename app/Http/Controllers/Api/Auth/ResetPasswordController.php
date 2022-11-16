@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Hash;
 
 class ResetPasswordController extends Controller
 {
@@ -62,10 +63,9 @@ class ResetPasswordController extends Controller
         }
 
         $user = User::where('email', $reset->email)->first();
-        $user->password = bcrypt($request->password);
+        $user->password = Hash::make($request->input('password'));
+        // $user->password = bcrypt($request->password);
         $user->save();
-
-
 
         $userIpInfo = getIpInfo();
         $userBrowser = osBrowser();
@@ -81,7 +81,7 @@ class ResetPasswordController extends Controller
         return response()->json([
             'code'=>200,
             'status'=>'ok',
-            'message'=>['error'=>$notify]
+            'message'=>['success'=>$notify]
         ]);
     }
 

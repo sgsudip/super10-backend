@@ -1,1 +1,2 @@
-this directory contains all controllers middleware and requests
+This directory contains all controllers middleware and requests.
+The testcontroller file inside api folder was specifically built for testing self-validate api of slotegrator.

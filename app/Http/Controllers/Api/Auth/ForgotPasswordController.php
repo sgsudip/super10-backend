@@ -8,6 +8,9 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\preset;
+use Illuminate\Support\Facades\Mail;
+
 
 class ForgotPasswordController extends Controller
 {
@@ -57,6 +60,7 @@ class ForgotPasswordController extends Controller
         $validator = Validator::make($request->all(),$validationRule,$validationMessage);
 
         if ($validator->fails()) {
+            echo "validator failed";
             return response()->json([
                 'code'=>422,
                 'status'=>'error',
@@ -66,6 +70,7 @@ class ForgotPasswordController extends Controller
 
         // get user row
         $user = User::where($request->type, $request->value)->first();
+        echo $user->email;
         
         // if user not found
         if (!$user) {
@@ -80,6 +85,7 @@ class ForgotPasswordController extends Controller
         PasswordReset::where('email', $user->email)->delete();
         // generate code or verification
         $code = verificationCode(6);
+        // pass
         $password = new PasswordReset();
         $password->email = $user->email;
         $password->token = $code;
@@ -87,15 +93,16 @@ class ForgotPasswordController extends Controller
         $password->save();
 
         // get user's ip information
-        $userIpInfo = getIpInfo();
+        // $userIpInfo = getIpInfo();
         // get the browser
-        $userBrowserInfo = osBrowser();
+        // $userBrowserInfo = osBrowser();
+        Mail::to($request->input('email'))->send(new preset($request->input("email"),$code));
         sendEmail($user, 'PASS_RESET_CODE', [
-            'code' => $code,
-            'operating_system' => @$userBrowserInfo['os_platform'],
-            'browser' => @$userBrowserInfo['browser'],
-            'ip' => @$userIpInfo['ip'],
-            'time' => @$userIpInfo['time']
+            'code' => $code
+            // 'operating_system' => @$userBrowserInfo['os_platform'],
+            // 'browser' => @$userBrowserInfo['browser'],
+            // 'ip' => @$userIpInfo['ip'],
+            // 'time' => @$userIpInfo['time']
         ]);
         $email = $user->email;
         $notify[] = 'Password reset email sent successfully';

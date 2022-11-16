@@ -44,32 +44,36 @@ class TestController extends Controller
             'X-Nonce' => $nonce
         ];
         $requestParams = [
-            'game_uuid' => $request->game_uuid,
-            'player_id' => $request->player_id,
-            'currency' => 'USD',
-            'player_name' => $request->player_name,
+            // 'game_uuid' => $request->game_uuid,
+            // 'player_id' => $request->player_id,
+            // 'currency' => 'USD',
+            // 'player_name' => $request->player_name,
         ];
         $mergedParams = array_merge($requestParams, $headers);
         ksort($mergedParams);
-        // $queryString = http_build_query($mergedParams);
-        // $XSign = hash_hmac('sha1', $queryString, $merchantKey);
-
-
-        $getHeader = array(
-            'X-Merchant-Id: ' . $merchantId,
-            'X-Timestamp: ' . $time,
-            'X-Nonce: ' . $nonce,
-            // 'X-Sign: ' . $XSign,
-            'Accept: application/json',
-            'Enctype: application/x-www-form-urlencoded'
-        );
-
+        $hashString = http_build_query($mergedParams);
+        
+        $XSign = hash_hmac('sha1', $hashString, $merchantKey);
+        
+        ksort($requestParams);
+        $postdata = http_build_query($requestParams);
+        
+        
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $testUrl);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $getHeader);
+        //curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'X-Merchant-Id: '.$merchantId,
+        'X-Timestamp: '.$time,
+        'X-Nonce: '.$nonce,
+        'X-Sign: '.$XSign,
+        'Accept: application/json',
+        'Enctype: application/x-www-form-urlencoded',
+        ));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
+        var_dump($result);
         // if ($result === false) {
         //     echo 'Curl error: ' . curl_error($ch);
         // } else {

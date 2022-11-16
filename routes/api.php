@@ -13,15 +13,16 @@ Route::namespace('Api')->name('api.')->group(function () {
     Route::get('language-data/{code}', 'BasicController@languageData');
     Route::post('gamesInit', 'BasicController@gamesInit');
     Route::get('getGames', 'BasicController@getGames');
-    Route::post('testValidate',"BasicController@testValidate");
+    Route::post('testValidate', "BasicController@testValidate");
+
 
     Route::namespace('Auth')->group(function () {
         Route::post('login', 'LoginController@login');
         Route::post('register', 'RegisterController@register');
-        
         Route::post('password/email', 'ForgotPasswordController@sendResetCodeEmail');
-        Route::post('password/verify-code', 'ForgotPasswordController@verifyCode');
         Route::post('password/reset', 'ResetPasswordController@reset');
+        // Route::post('password/verify-code', 'ForgotPasswordController@verifyCode');
+
     });
 
 
@@ -68,4 +69,3 @@ Route::namespace('Api')->name('api.')->group(function () {
 // Route::post("password/reset", "ResetPasswordAPIController@reset");
 // ->name indicates the name of the route
 // Route::post("password/email", "ForgotPasswordAPIController@sendResetLinkEmail")->name("password.email");
-

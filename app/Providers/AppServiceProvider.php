@@ -83,7 +83,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         ResetPassword::createUrlUsing(function ($notifiable, $token) {
-            return "http://localhost:4200/passwordreset/{$token}";
+            return "http://localhost:4200/#/passwordreset/{$token}";
         });
     }
 }
