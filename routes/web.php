@@ -7,7 +7,9 @@ Route::get('/clear', function(){
 });
 
 
-
+// HOME PAGE OR INDEX PAGE OR MAIN PAGE
+// last line contains home page obviously
+Route::get('/', 'SiteController@index')->name('home');
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -452,4 +454,5 @@ Route::get('blog/{id}/{slug}', 'SiteController@blogDetails')->name('blog.details
 
 Route::get('placeholder-image/{size}', 'SiteController@placeholderImage')->name('placeholder.image');
 Route::get('/{slug}', 'SiteController@pages')->name('pages');
-Route::get('/', 'SiteController@index')->name('home');
+
+
