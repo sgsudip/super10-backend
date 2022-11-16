@@ -1,6 +1,6 @@
 
 @php
-    $upcomingMatches = App\Models\Match::where('status', 1)->whereHas('category', function($q) {
+    $upcomingMatches = App\Models\TheMatch::where('status', 1)->whereHas('category', function($q) {
             $q->where('status', 1);
         })->whereHas('league', function($query) {
             $query->where('status', 1);

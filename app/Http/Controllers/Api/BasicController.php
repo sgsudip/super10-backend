@@ -203,102 +203,14 @@ class BasicController extends Controller
             'status' => 'ok',
             'message' => [
                 'language_data' => json_decode($result, true),
-                'headers' => $headers,
-                'requestParamsHeaders' => $requestParams,
-                'hashstring' => $hashString,
-                'postDataHeader' => $postHeader
+                // 'headers' => $headers,
+                // 'requestParamsHeaders' => $requestParams,
+                // 'hashstring' => $hashString,
+                // 'postDataHeader' => $postHeader
             ]
         ]);
     }
 
 
-    public function testValidate(Request $request)
-    {
-        echo "Test validate function";
-
-        $testUrl = "https://staging.slotegrator.com/api/index.php/v1/self-validate";
-        $merchantId = 'ae88ab8ee84ff40a76f1ec2e0f7b5caa';
-        $merchantKey = '4953e491031d3f9e7545223885cf43a7403f14cb';
-        $nonce = md5(uniqid(mt_rand(), true));
-        $time = time();
-        $headers = [
-            'X-Merchant-Id' => $merchantId,
-            'X-Timestamp' => $time,
-            'X-Nonce' => $nonce
-        ];
-        $requestParams = [
-            'game_uuid' => $request->game_uuid,
-            'player_id' => $request->player_id,
-            'currency' => 'EUR',
-            'player_name' => $request->player_name,
-        ];
-        $mergedParams = array_merge($requestParams, $headers);
-        
-        ksort($mergedParams);
-
-        // print_r($mergedParams);
-        $queryString = http_build_query($mergedParams);
-        $XSign = hash_hmac('sha1', $queryString, $merchantKey);
-        ksort($requestParams);
-        $postdata = http_build_query($requestParams);
-
-
-        $postHeader = array(
-            'X-Merchant-Id: ' . $merchantId,
-            'X-Timestamp: ' . $time,
-            'X-Nonce: ' . $nonce,
-            'X-Sign: ' . $XSign,
-            'Accept: application/json',
-            'Enctype: application/x-www-form-urlencoded'
-        );
-
-        // print_r($postHeader);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $testUrl);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $postHeader);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $result = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            $error_msg = curl_error($ch);
-        }
-
-        if (isset($error_msg)) {
-            return response()->json([
-                'code' => 402,
-                'status' => 'error',
-                "result" => $error_msg
-            ]);
-        } else {
-
-            return response()->json([
-                'code' => 200,
-                'status' => 'ok',
-                "result" => json_decode($result)
-            ]);
-        }
-
-
-        // if ($result === false) {
-        //     echo 'Curl error: ' . curl_error($ch);
-        // } else {
-        //     echo 'Operation completed without any errors';
-        // }
-
-        // return response()->json([
-        //     'code' => 200,
-        //     'status' => 'ok',
-        //     'message' => [
-        //         'result' => $result,
-        //         'headers' => $headers,
-        //         'requestParamsHeaders' => $requestParams,
-        //         'hashstring' => $queryString,
-        //         'getDataHeader' => $getHeader
-        //     ]
-        // ]);
-
-    }
+   
 }

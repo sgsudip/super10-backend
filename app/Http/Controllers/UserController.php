@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Lib\GoogleAuthenticator;
 use App\Models\AdminNotification;
 use App\Models\Bet;
@@ -34,7 +36,7 @@ class UserController extends Controller
         $widget['totalLose']        = Bet::where('user_id', $user->id)->where('status', 2)->count();
         $widget['totalRefund']      = Bet::where('user_id', $user->id)->where('status', 3)->count();
         $widget['totalTicket']      = SupportTicket::where('user_id', $user->id)->count();
-        $bets                       = Bet::where('user_id', auth()->user()->id)->latest()->limit(15)->with(['match','question','option'])->get();
+        $bets                       = Bet::where('user_id', auth()->user()->id)->latest()->limit(15)->with(['match', 'question', 'option'])->get();
         // this renders the view
         return view($this->activeTemplate . 'user.dashboard', compact('pageTitle', 'user', 'widget', 'bets'));
     }
@@ -43,7 +45,7 @@ class UserController extends Controller
     {
         $pageTitle = "Profile Setting";
         $user = Auth::user();
-        return view($this->activeTemplate. 'user.profile_setting', compact('pageTitle','user'));
+        return view($this->activeTemplate . 'user.profile_setting', compact('pageTitle', 'user'));
     }
 
     public function submitProfile(Request $request)
@@ -55,10 +57,10 @@ class UserController extends Controller
             'state' => 'sometimes|required|max:80',
             'zip' => 'sometimes|required|max:40',
             'city' => 'sometimes|required|max:50',
-            'image' => ['image',new FileTypeValidate(['jpg','jpeg','png'])]
-        ],[
-            'firstname.required'=>'First name field is required',
-            'lastname.required'=>'Last name field is required'
+            'image' => ['image', new FileTypeValidate(['jpg', 'jpeg', 'png'])]
+        ], [
+            'firstname.required' => 'First name field is required',
+            'lastname.required' => 'Last name field is required'
         ]);
 
         $user = Auth::user();
@@ -103,7 +105,7 @@ class UserController extends Controller
 
         $this->validate($request, [
             'current_password' => 'required',
-            'password' => ['required','confirmed',$password_validation]
+            'password' => ['required', 'confirmed', $password_validation]
         ]);
 
 
@@ -132,8 +134,8 @@ class UserController extends Controller
     {
         $pageTitle = 'Deposit History';
         $emptyMessage = 'No history found.';
-        $logs = auth()->user()->deposits()->with(['gateway'])->orderBy('id','desc')->paginate(getPaginate());
-        return view($this->activeTemplate.'user.deposit_history', compact('pageTitle', 'emptyMessage', 'logs'));
+        $logs = auth()->user()->deposits()->with(['gateway'])->orderBy('id', 'desc')->paginate(getPaginate());
+        return view($this->activeTemplate . 'user.deposit_history', compact('pageTitle', 'emptyMessage', 'logs'));
     }
 
     /*
@@ -142,9 +144,9 @@ class UserController extends Controller
 
     public function withdrawMoney()
     {
-        $withdrawMethod = WithdrawMethod::where('status',1)->get();
+        $withdrawMethod = WithdrawMethod::where('status', 1)->get();
         $pageTitle = 'Withdraw Money';
-        return view($this->activeTemplate.'user.withdraw.methods', compact('pageTitle','withdrawMethod'));
+        return view($this->activeTemplate . 'user.withdraw.methods', compact('pageTitle', 'withdrawMethod'));
     }
 
     public function withdrawStore(Request $request)
@@ -191,16 +193,16 @@ class UserController extends Controller
 
     public function withdrawPreview()
     {
-        $withdraw = Withdrawal::with('method','user')->where('trx', session()->get('wtrx'))->where('status', 0)->orderBy('id','desc')->firstOrFail();
+        $withdraw = Withdrawal::with('method', 'user')->where('trx', session()->get('wtrx'))->where('status', 0)->orderBy('id', 'desc')->firstOrFail();
         $pageTitle = 'Withdraw Preview';
-        return view($this->activeTemplate . 'user.withdraw.preview', compact('pageTitle','withdraw'));
+        return view($this->activeTemplate . 'user.withdraw.preview', compact('pageTitle', 'withdraw'));
     }
 
 
     public function withdrawSubmit(Request $request)
     {
         $general = GeneralSetting::first();
-        $withdraw = Withdrawal::with('method','user')->where('trx', session()->get('wtrx'))->where('status', 0)->orderBy('id','desc')->firstOrFail();
+        $withdraw = Withdrawal::with('method', 'user')->where('trx', session()->get('wtrx'))->where('status', 0)->orderBy('id', 'desc')->firstOrFail();
 
         $rules = [];
         $inputField = [];
@@ -209,7 +211,7 @@ class UserController extends Controller
                 $rules[$key] = [$cus->validation];
                 if ($cus->type == 'file') {
                     array_push($rules[$key], 'image');
-                    array_push($rules[$key], new FileTypeValidate(['jpg','jpeg','png']));
+                    array_push($rules[$key], new FileTypeValidate(['jpg', 'jpeg', 'png']));
                     array_push($rules[$key], 'max:2048');
                 }
                 if ($cus->type == 'text') {
@@ -226,7 +228,7 @@ class UserController extends Controller
 
         $user = auth()->user();
         if ($user->ts) {
-            $response = verifyG2fa($user,$request->authenticator_code);
+            $response = verifyG2fa($user, $request->authenticator_code);
             if (!$response) {
                 $notify[] = ['error', 'Wrong verification code'];
                 return back()->withNotify($notify);
@@ -239,8 +241,8 @@ class UserController extends Controller
             return back()->withNotify($notify);
         }
 
-        $directory = date("Y")."/".date("m")."/".date("d");
-        $path = imagePath()['verify']['withdraw']['path'].'/'.$directory;
+        $directory = date("Y") . "/" . date("m") . "/" . date("d");
+        $path = imagePath()['verify']['withdraw']['path'] . '/' . $directory;
         $collection = collect($request);
         $reqField = [];
         if ($withdraw->method->user_data != null) {
@@ -253,7 +255,7 @@ class UserController extends Controller
                             if ($request->hasFile($inKey)) {
                                 try {
                                     $reqField[$inKey] = [
-                                        'field_name' => $directory.'/'.uploadImage($request[$inKey], $path),
+                                        'field_name' => $directory . '/' . uploadImage($request[$inKey], $path),
                                         'type' => $inVal->type,
                                     ];
                                 } catch (\Exception $exp) {
@@ -296,8 +298,8 @@ class UserController extends Controller
 
         $adminNotification = new AdminNotification();
         $adminNotification->user_id = $user->id;
-        $adminNotification->title = 'New withdraw request from '.$user->username;
-        $adminNotification->click_url = urlPath('admin.withdraw.details',$withdraw->id);
+        $adminNotification->title = 'New withdraw request from ' . $user->username;
+        $adminNotification->click_url = urlPath('admin.withdraw.details', $withdraw->id);
         $adminNotification->save();
 
         notify($user, 'WITHDRAW_REQUEST', [
@@ -320,36 +322,36 @@ class UserController extends Controller
     public function withdrawLog()
     {
         $pageTitle = "Withdraw Log";
-        $withdraws = Withdrawal::where('user_id', Auth::id())->where('status', '!=', 0)->with('method')->orderBy('id','desc')->paginate(getPaginate());
+        $withdraws = Withdrawal::where('user_id', Auth::id())->where('status', '!=', 0)->with('method')->orderBy('id', 'desc')->paginate(getPaginate());
         $emptyMessage = "No Data Found!";
-        return view($this->activeTemplate.'user.withdraw.log', compact('pageTitle','withdraws', 'emptyMessage'));
+        return view($this->activeTemplate . 'user.withdraw.log', compact('pageTitle', 'withdraws', 'emptyMessage'));
     }
 
     public function commissionsDeposit()
     {
         $pageTitle = 'Deposit Referral Commissions';
-        $logs = CommissionLog::where('type','deposit')->where('to_id', auth()->user()->id)->with('user', 'bywho')->latest()->paginate(getPaginate());
+        $logs = CommissionLog::where('type', 'deposit')->where('to_id', auth()->user()->id)->with('user', 'bywho')->latest()->paginate(getPaginate());
         $emptyMessage = "No result found";
 
-        return view($this->activeTemplate.'user.referral.commission', compact('pageTitle', 'logs', 'emptyMessage'));
+        return view($this->activeTemplate . 'user.referral.commission', compact('pageTitle', 'logs', 'emptyMessage'));
     }
 
     public function commissionsBet()
     {
         $pageTitle = 'Referral Commissions on Bet';
-        $logs = CommissionLog::where('type','bet')->where('to_id', auth()->user()->id)->with('user', 'bywho')->latest()->paginate(getPaginate());
+        $logs = CommissionLog::where('type', 'bet')->where('to_id', auth()->user()->id)->with('user', 'bywho')->latest()->paginate(getPaginate());
         $emptyMessage = "No result found";
 
-        return view($this->activeTemplate.'user.referral.commission', compact('pageTitle', 'logs', 'emptyMessage'));
+        return view($this->activeTemplate . 'user.referral.commission', compact('pageTitle', 'logs', 'emptyMessage'));
     }
 
     public function commissionsWin()
     {
         $pageTitle = 'Referral Commissions on Won Bet';
-        $logs = CommissionLog::where('type','win')->where('to_id', auth()->user()->id)->with('user', 'bywho')->latest()->paginate(getPaginate());
+        $logs = CommissionLog::where('type', 'win')->where('to_id', auth()->user()->id)->with('user', 'bywho')->latest()->paginate(getPaginate());
         $emptyMessage = "No result found";
 
-        return view($this->activeTemplate.'user.referral.commission', compact('pageTitle', 'logs', 'emptyMessage'));
+        return view($this->activeTemplate . 'user.referral.commission', compact('pageTitle', 'logs', 'emptyMessage'));
     }
 
     public function refMy($levelNo = 1)
@@ -359,15 +361,15 @@ class UserController extends Controller
         $lev = 0;
         $userId = auth()->user()->id;
         while ($userId != null) {
-            $user = User::where('ref_by',$userId)->first();
+            $user = User::where('ref_by', $userId)->first();
             if ($user) {
                 $lev++;
                 $userId = $user->id;
-            }else{
+            } else {
                 $userId = null;
             }
         }
-        return view($this->activeTemplate. 'user.referral.users', compact('pageTitle','emptyMessage','levelNo','lev'));
+        return view($this->activeTemplate . 'user.referral.users', compact('pageTitle', 'emptyMessage', 'levelNo', 'lev'));
     }
 
     public function show2faForm()
@@ -378,7 +380,7 @@ class UserController extends Controller
         $secret = $ga->createSecret();
         $qrCodeUrl = $ga->getQRCodeGoogleUrl($user->username . '@' . $general->sitename, $secret);
         $pageTitle = 'Two Factor';
-        return view($this->activeTemplate.'user.twofactor', compact('pageTitle', 'secret', 'qrCodeUrl'));
+        return view($this->activeTemplate . 'user.twofactor', compact('pageTitle', 'secret', 'qrCodeUrl'));
     }
 
     public function create2fa(Request $request)
@@ -388,7 +390,7 @@ class UserController extends Controller
             'key' => 'required',
             'code' => 'required',
         ]);
-        $response = verifyG2fa($user,$request->code,$request->key);
+        $response = verifyG2fa($user, $request->code, $request->key);
         if ($response) {
             $user->tsc = $request->key;
             $user->ts = 1;
@@ -417,7 +419,7 @@ class UserController extends Controller
         ]);
 
         $user = auth()->user();
-        $response = verifyG2fa($user,$request->code);
+        $response = verifyG2fa($user, $request->code);
         if ($response) {
             $user->tsc = null;
             $user->ts = 0;
@@ -443,6 +445,6 @@ class UserController extends Controller
         $transactions = Transaction::where('user_id', auth()->user()->id)->latest()->paginate(getPaginate());
         $emptyMessage = 'No transaction found';
 
-        return view($this->activeTemplate.'user.transaction', compact('pageTitle', 'transactions', 'emptyMessage'));
+        return view($this->activeTemplate . 'user.transaction', compact('pageTitle', 'transactions', 'emptyMessage'));
     }
 }

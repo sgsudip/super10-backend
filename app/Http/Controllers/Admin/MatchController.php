@@ -14,7 +14,7 @@ class MatchController extends Controller
 
     protected function filterMatches($type){
 
-        $matches = Match::latest();
+        $matches = TheMatch::latest();
         $this->pageTitle    = ucfirst($type). ' Matches';
         $this->emptyMessage = "No $type match found";
 
@@ -54,11 +54,11 @@ class MatchController extends Controller
         $league = League::findOrFail($request->league_id);
 
         if($id){
-            $match = Match::findOrFail($id);
+            $match = TheMatch::findOrFail($id);
             $notification = 'Match updated successfully';
             $match->status = $request->status ? 1 : 0;
         }else{
-            $match = new Match();
+            $match = new TheMatch();
             $notification = 'Match added successfully';
         }
 

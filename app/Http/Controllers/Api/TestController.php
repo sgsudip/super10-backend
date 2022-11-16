@@ -33,6 +33,7 @@ class TestController extends Controller
 
     public function testValidate(Request $request)
     {
+        echo "hello";
         $testUrl = "https://staging.slotegrator.com/api/index.php/v1/self-validate";
         $merchantId = 'ae88ab8ee84ff40a76f1ec2e0f7b5caa';
         $merchantKey = '4953e491031d3f9e7545223885cf43a7403f14cb';
@@ -93,8 +94,6 @@ class TestController extends Controller
         // ]);
 
         return response()->json([
-            'code' => 200,
-            'status' => 'ok',
             "result" => $result
         ]);
     }

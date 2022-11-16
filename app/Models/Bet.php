@@ -28,7 +28,7 @@ class Bet extends Model
 
     public function match()
     {
-        return $this->belongsTo(Match::class);
+        return $this->belongsTo(TheMatch::class);
     }
 
     public function scopePending()

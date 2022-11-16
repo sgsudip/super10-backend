@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\AdminNotification;
 use App\Models\Category;
 use App\Models\Question;
-use App\Models\Match;
+use App\Models\TheMatch;
 use App\Models\Frontend;
 use App\Models\Language;
 use App\Models\League;
@@ -33,7 +33,7 @@ class SiteController extends Controller
         $pageTitle  = 'Home';
         $sections   = Page::where('tempname',$this->activeTemplate)->where('slug','home')->first();
         $categories = Category::where('status', 1)->with('leagues')->latest()->get();
-        $matches = Match::runningForUser()->latest()
+        $matches = TheMatch::runningForUser()->latest()
         ->with([
             'questions'=>function($q){
                 $q->where('status', 1);
@@ -50,7 +50,7 @@ class SiteController extends Controller
     {
         $league     = League::where('status', 1)->findOrFail($id);
         $sections   = Page::where('tempname', $this->activeTemplate)->where('slug','home')->first();
-        $matches    = Match::runningForUser()->where('league_id', $league->id)
+        $matches    = TheMatch::runningForUser()->where('league_id', $league->id)
         ->with([
             'questions'=>function($q){
                 $q->where('status', 1);
@@ -67,7 +67,7 @@ class SiteController extends Controller
 
     public function matchDetails($slug, $id)
     {
-        $match      = Match::runningForUser()->findOrFail($id);
+        $match      = TheMatch::runningForUser()->findOrFail($id);
         $questions  = Question::where('status', 1)->where('match_id', $match->id)->with(['options'=>function($q){
             $q->where('status', 1);
         }])->paginate(getPaginate());

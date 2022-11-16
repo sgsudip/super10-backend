@@ -13,7 +13,6 @@ class ProcessController extends Controller
     /*
      * CoinPaymentHosted Gateway
      */
-
     public static function process($deposit)
     {
 

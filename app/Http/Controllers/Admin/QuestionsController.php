@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Question;
-use App\Models\Match;
+use App\Models\TheMatch;
 
 class QuestionsController extends Controller
 {
     public function index($id)
     {
-        $match          = Match::findOrFail($id);
+        $match          = TheMatch::findOrFail($id);
+        
         $pageTitle      = 'Questions for - '.$match->name;
         $emptyMessage   = 'No question found';
         $questions      = Question::where('match_id', $match->id)->with('options')->latest()->paginate(getPaginate());

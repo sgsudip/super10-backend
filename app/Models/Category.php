@@ -16,6 +16,6 @@ class Category extends Model
 
     public function matches()
     {
-        return $this->hasMany(Match::class);
+        return $this->hasMany(TheMatch::class);
     }
 }
