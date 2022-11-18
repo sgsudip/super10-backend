@@ -453,6 +453,7 @@ Route::get('blogs', 'SiteController@blogs')->name('blogs');
 Route::get('blog/{id}/{slug}', 'SiteController@blogDetails')->name('blog.details');
 
 Route::get('placeholder-image/{size}', 'SiteController@placeholderImage')->name('placeholder.image');
+
 Route::get('/{slug}', 'SiteController@pages')->name('pages');
 
 

@@ -86,23 +86,12 @@ class RegisterController extends Controller
         $validator = $this->validator($request->all());
         if ($validator->fails()) {
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
+                'code'=>403,
+                'status'=>'error',
                 'message'=>['error'=>$validator->errors()->all()],
             ]);
         }
-        
-        $exist = User::where('mobile',$request->mobile_code.$request->mobile)->first();
-        // check if mobile already exists
-        if ($exist) {
-            $response[] = 'The mobile number already exists';
-            return response()->json([
-                'code'=>409,
-                'status'=>'conflict',
-                'message'=>['error'=>$response],
-            ]);
-        }
-        
+
 
         // create the user
         $user = $this->create($request->all());
@@ -113,9 +102,9 @@ class RegisterController extends Controller
         $notify[] = 'Registration successfull';
         Mail::to($request->input('email'))->send(new registersuccess($request->input("email")));
         return response()->json([
-            'code'=>202,
-            'status'=>'created',
-            'message'=>['success'=>$notify],
+            'code'=>200,
+            'status'=>'ok',
+            'message'=>"Registration successfull",
             'data'=>$response
         ]);
 
