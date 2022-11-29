@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Gateway\CoinbaseCommerce;
 
 use App\Models\Deposit;
@@ -8,22 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Gateway\PaymentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use GuzzleHttp\Client as ghttp;
-
 use Session;
 
 class ProcessController extends Controller
 {
     public static function process($deposit)
     {
-        $url = 'https://api.commerce.coinbase.com/charges';
-
-        echo "Coinbase-process-start \n";
-        echo $deposit->trx;
-        echo "\n";
-        echo Auth::user()->username;
-        echo "\n";
-
+        echo "Coinbase process start \n";
         // get general settings for website
         $basic = GeneralSetting::first();
 
@@ -35,30 +25,8 @@ class ProcessController extends Controller
         // $coinbaseAcc1 = json_decode($deposit->gatewayCurrency()->gateway_parameters);
 
         // echo $coinbaseAcc1;
-        $username = Auth::user()->username;
-        $amount = $deposit->final_amo;
-        $curr = $deposit->method_currency;
-        // $client = new ghttp();
 
-        // $response = $client->request('POST', 'https://api.commerce.coinbase.com/charges', [
-        //     'body' => 
-        //     `
-        //     {
-        //         "name": $username,
-        //         "description":"Pay to super10",
-        //         "pricing_type":"fixed_price",
-        //         "local_price":"{'amount':'$amount','currency':'$curr'}",
-        //         "metadata":"",
-        //         "redirect_url":"http://localhost:4200/deposit/history","cancel_url":"http://localhost:4200/deposit"}
-        //     `,
-        //     'headers' => [
-        //         'accept' => 'application/json',
-        //         'content-type' => 'application/json',
-        //         'X-CC-Api-Key' => env("COINBASE_API_KEY")
-        //     ],
-        // ]);
-
-        // echo $response->getBody();
+        $url = 'https://api.commerce.coinbase.com/charges';
 
         // data array
         $array = [
@@ -69,8 +37,7 @@ class ProcessController extends Controller
                 'currency' => $deposit->method_currency
             ],
             'metadata' => [
-                'trx' => $deposit->trx,
-                'user_id' => Auth::user()->id
+                'trx' => $deposit->trx
             ],
             'pricing_type' => "fixed_price",
             'redirect_url' => gatewayRedirectUrl(true),
@@ -78,37 +45,44 @@ class ProcessController extends Controller
         ];
 
         // post data basically
-        $postdata = json_encode($array);
+        $yourjson = json_encode($array);
+
         // initialize request
         $ch = curl_init();
         // api key from coinbase settings page
-        $apiKey = env("COINBASE_API_KEY");
+        // $apiKey = $coinbaseAcc->api_key;
+        
+        // request headers
         $header = array();
         $header[] = 'Content-Type: application/json';
-        $header[] = 'Accept: application/json';
-        $header[] = 'X-CC-Api-Key: ' . env("COINBASE_API_KEY");
+        $header[] = 'X-CC-Api-Key: ' . "08f5b24d-9a02-4b9b-89bf-1e5157bda647";
+        // specify api version to use
         $header[] = 'X-CC-Version: 2018-03-22';
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        // postdata
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $yourjson);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($ch);
+
         curl_close($ch);
+
+
         $result = json_decode($result);
-        return $result;
 
+        // echo $result;
 
-        // if (@$result->error == '') {
-        //     $send['redirect'] = true;
-        //     $send['redirect_url'] = $result->data->hosted_url;
-        // } else {
-        //     $send['error'] = true;
-        //     $send['message'] = 'Some problem occured with api.';
-        // }
+        if (@$result->error == '') {
+            $send['redirect'] = true;
+            $send['redirect_url'] = $result->data->hosted_url;
+        } else {
+            $send['error'] = true;
+            $send['message'] = 'Some problem occured with api.';
+        }
 
-        // $send['view'] = '';
-        // return json_encode($send);
+        $send['view'] = '';
+        return json_encode($send);
     }
 
     public function ipn(Request $request)
@@ -122,7 +96,7 @@ class ProcessController extends Controller
         // deposits table, where transaction equals postdata.data.event.data.metadata.trx
         $deposit = Deposit::where('trx', $res->event->data->metadata->trx)->orderBy('id', 'DESC')->first();
 
-
+        
         $coinbaseAcc = json_decode($deposit->gatewayCurrency()->gateway_parameter);
 
         // all request headers in associated array format

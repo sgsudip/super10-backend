@@ -170,9 +170,9 @@ class PaymentController extends Controller
         // alias in the gateway table maps to payment gateway folders present in our Controllers directory 
         $new = substr(__NAMESPACE__, 0, -4) . '\\Gateway' . '\\' . $dirName . '\\ProcessController';
 
-        echo "Controller \n";
-        echo $new;
-        echo "\n";
+        // echo "Controller \n";
+        // echo $new;
+        // echo "\n";
 
         $data = json_decode($new::process($deposit),true);
 
