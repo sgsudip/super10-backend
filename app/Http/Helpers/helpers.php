@@ -222,6 +222,11 @@ function captchaVerify($code, $secret)
     return false;
 }
 
+/**
+ * This function returns a random string
+ *
+ * @length string
+ */
 function getTrx($length = 12)
 {
     $characters = 'ABCDEFGHJKMNOPQRSTUVWXYZ123456789';
@@ -774,9 +779,9 @@ function getContent($data_keys, $singleQuery = false, $limit = null,$orderById =
 
 function gatewayRedirectUrl($type = false){
     if ($type) {
-        return 'user.deposit.history';
+        return 'http://localhost:4200/deposit/history';
     }else{
-        return 'user.deposit';
+        return 'http://localhost:4200/deposit';
     }
 }
 

@@ -17,6 +17,7 @@ class CheckStatus
     {
         if (Auth::check()) {
             $user = auth()->user();
+            // if all these checks are true then pass the request object to the closure function passed
             if ($user->status  && $user->ev  && $user->sv  && $user->tv) {
                 return $next($request);
             } else {

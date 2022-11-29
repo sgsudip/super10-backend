@@ -53,12 +53,14 @@ Route::namespace('Api')->name('api.')->group(function () {
             // Deposit
             Route::get('deposit/methods', 'PaymentController@depositMethods');
             Route::post('deposit/insert', 'PaymentController@depositInsert');
-            Route::get('deposit/confirm', 'PaymentController@depositConfirm');
+            Route::post('deposit/confirm', 'PaymentController@depositConfirm');
 
             Route::get('deposit/manual', 'PaymentController@manualDepositConfirm');
             Route::post('deposit/manual', 'PaymentController@manualDepositUpdate');
 
             Route::get('deposit/history', 'UserController@depositHistory');
+
+            Route::post('deposit/getone',"UserController@getOneDeposit");
 
             Route::get('transactions', 'UserController@transactions');
         });

@@ -376,6 +376,7 @@ class UserController extends Controller
         ]);
     }
 
+    // gets all the deposits created by user
     public function depositHistory(){
         $deposits = Deposit::where('user_id', auth()->user()->id)->where('status', '!=', 0)->with('gateway')->orderBy('id','desc')->paginate(getPaginate());
         return response()->json([
@@ -386,6 +387,24 @@ class UserController extends Controller
                 'verification_file_path'=>imagePath()['verify']['deposit']['path'],
             ]
         ]);
+    }
+
+    // get one deposit
+    public function getOneDeposit(Request $request){
+        $tid = $request->transactionid;
+
+        $deposit = Deposit::where('user_id', auth()->user()->id)->where('trx',$tid)->orderBy('id','desc')->first();
+
+
+        return response()->json([
+            'code'=>200,
+            'status'=>'ok',
+            'data'=>[
+                'deposit'=>$deposit,
+                'tid'=>$tid
+            ]
+        ]);
+
     }
 
     public function transactions(){

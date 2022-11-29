@@ -85,7 +85,7 @@ class LoginController extends Controller
         // $response[] = 'Login Succesfull';
         // convert the response to json, contains access token and token type
         // response()->header();
-        Mail::to($request->input('username'))->send(new loginsuccess($request->input("username")));
+        // Mail::to($request->input('username'))->send(new loginsuccess($request->input("username")));
         return response()->json([
             'code'=>200,
             'status'=>'ok',
